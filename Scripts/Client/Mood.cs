@@ -9,11 +9,14 @@ public class Mood
     private int moodOriginal;
     private float time;
     public ColorMood colorMood;
+    public int maxValue;
+    /*
     public int MoodProportion
     {
         get { return moodOriginal / 12;  }
        // set { moodOriginal = value; }
     }
+    */
 
     public int MoodOriginal
     {
@@ -23,10 +26,10 @@ public class Mood
 
     public void AddMood(int value)
     {
-        moodOriginal += value * 12;
-        if(moodOriginal > 120)
+        moodOriginal += value;
+        if(moodOriginal > maxValue)
         {
-            moodOriginal = 120;
+            moodOriginal = maxValue;
         }
     }
 
@@ -35,15 +38,16 @@ public class Mood
         time += Time.deltaTime;
         if (status && time > 1)
         {
-            moodOriginal -= 2;
+            moodOriginal -= 1;
             time = 0;
         }
     }
 
     public Mood()
     {
-        colorMood = new ColorMood( Color.green,  Color.red, 120);
-        moodOriginal = 120;
+        maxValue = 100;
+        colorMood = new ColorMood(Color.green, Color.yellow, Color.red, maxValue);
+        moodOriginal = maxValue;
         status = true;
     }
 }
@@ -51,22 +55,37 @@ public class Mood
 
 public class ColorMood
 {
-     Color colorStart;
-     Color colorFinish;
+    Color colorStart;
+    Color colorFinish;
+    Color colorMedium;
     float maxValue = 0;
 
-    public ColorMood( Color colorFinish,  Color colorStart, float maxValue)
+    public ColorMood( Color colorFinish, Color colorMedium,  Color colorStart, float maxValue)
     {
         this.colorStart = colorStart;
         this.colorFinish = colorFinish;
-        this.maxValue = maxValue;
+        this.colorMedium = colorMedium;
+        this.maxValue = maxValue/2;
     }
 
     public  Color ReturnColor(float time)
     {
-        float r = Interpolation(0, maxValue, time, colorStart.r, colorFinish.r);
-        float g = Interpolation(0, maxValue, time, colorStart.g, colorFinish.g);
-        float b = Interpolation(0, maxValue, time, colorStart.b, colorFinish.b);
+        float r;
+        float g;
+        float b;
+        if (time > maxValue)
+        {
+            time -= maxValue;
+            r = Interpolation(0, maxValue, time, colorMedium.r, colorFinish.r);
+            g = Interpolation(0, maxValue, time, colorMedium.g, colorFinish.g);
+            b = Interpolation(0, maxValue, time, colorMedium.b, colorFinish.b);
+        }
+        else
+        {
+            r = Interpolation(0, maxValue, time, colorStart.r, colorMedium.r);
+            g = Interpolation(0, maxValue, time, colorStart.g, colorMedium.g);
+            b = Interpolation(0, maxValue, time, colorStart.b, colorMedium.b);            
+        }
         return new Color(r, g, b);
         
     }

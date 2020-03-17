@@ -35,7 +35,6 @@ public class OrderProcessing : MonoBehaviour
     public GameObject readyFood;         
 
 
-    // Start is called before the first frame update
     void Start()
     {
         placeForClient = new GameObject[nomberOfPlace];
@@ -67,6 +66,7 @@ public class OrderProcessing : MonoBehaviour
 
         GameObject test = transform.Find("client").gameObject;
         test.GetComponent<NewClient>().status = StatusClient.eat;
+        test.GetComponent<NewClient>().mood.AddMood(10);
         Money.SetFood();
     }
 
@@ -77,8 +77,8 @@ public class OrderProcessing : MonoBehaviour
         clientOnTable = newClient.numberOfPeople;
 
         GameObject pos = transform.Find("PositionMood").gameObject;
-        newClient.coordinateBox = Camera.main.WorldToScreenPoint(new Vector3(pos.transform.position.x, pos.transform.position.y, pos.transform.position.z));
-        newClient.coordinateBox = new Vector2(newClient.coordinateBox.x, Screen.height - newClient.coordinateBox.y);
+        newClient.coordinateBoxMood = Camera.main.WorldToScreenPoint(new Vector3(pos.transform.position.x, pos.transform.position.y, pos.transform.position.z));
+        newClient.coordinateBoxMood = new Vector2(newClient.coordinateBoxMood.x, Screen.height - newClient.coordinateBoxMood.y);
 
         newClient.tag = "Table";            //временно
         for (int i = 0; i < clientOnTable; i++)
@@ -103,7 +103,7 @@ public class OrderProcessing : MonoBehaviour
                 style.fontSize = 20;
                 style.normal.textColor = Color.green;
                 Vector3 bufCamera = Camera.main.WorldToScreenPoint(this.transform.position);
-                GUI.Label(new Rect(bufCamera.x, Screen.height - bufCamera.y, 100, 20), id.ToString(), style);
+                GUI.Label(new Rect(bufCamera.x-15, Screen.height - bufCamera.y-20, 100, 20), id.ToString(), style);
             }
         }
     }

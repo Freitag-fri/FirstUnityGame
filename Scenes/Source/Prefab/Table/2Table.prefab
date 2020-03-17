@@ -839,16 +839,17 @@ MonoBehaviour:
   client: []
   foodOnTable: []
   nomberOfPlace: 2
+  clientOnTable: 0
   placeForClient: []
   placeForFood: []
   order: {fileID: 8395067128427496595, guid: 68b58228c2359a04a9b5235b96948ce8, type: 3}
   food: {fileID: 1699977470879308592, guid: 6182e7cc21489824b9940d184f63a106, type: 3}
   foodForClient: {fileID: 5487564950890148366, guid: c5171ceb984ed9142be40c4170723451,
     type: 3}
-  money: {fileID: 4267835179925355920, guid: e259fb826fb26504194955016c95fad9, type: 3}
   emptyPlate: {fileID: 8770982929249185434, guid: 9a10a44bb51dd1d43b47bddbae2bac41,
     type: 3}
   eatFood: 0
+  readyFood: {fileID: 0}
 --- !u!114 &6833451847110817879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -912,7 +913,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7089985745966323699}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.74, y: 0, z: -5.13}
+  m_LocalPosition: {x: 1.74, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6833451847110817872}

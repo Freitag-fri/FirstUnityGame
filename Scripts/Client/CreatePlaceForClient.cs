@@ -10,7 +10,9 @@ public class CreatePlaceForClient : MonoBehaviour
     public GameObject prefab;
     public int i = 0;
     public List<GameObject> baseClient;
-    
+    [SerializeField]
+    private Canvas canvas;
+
 
     void Start()
     {
@@ -26,7 +28,6 @@ public class CreatePlaceForClient : MonoBehaviour
         CreateClient();
     }
 
-    // Update is called once per frame
     void Update()
     {
        if(create && numberOfPeople != 0 && i < 6)
@@ -47,6 +48,7 @@ public class CreatePlaceForClient : MonoBehaviour
         parentGame.AddComponent<NewClient>();
         parentGame.GetComponent<NewClient>().CreateClient(numberOfPeople, parentGame, prefab, i);
         parentGame.GetComponent<NewClient>().placeInLine = i;
+        parentGame.GetComponent<NewClient>().canvas = canvas;
         i++;
     }
 

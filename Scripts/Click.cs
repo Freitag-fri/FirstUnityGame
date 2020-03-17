@@ -8,9 +8,6 @@ using UnityEngine.UI;
 public class Click : MonoBehaviour //, IPointerClickHandler
 {
     [SerializeField]
-    private Slider slider;
-
-    [SerializeField]
     private GameObject click;
     Vector3 positionClick;
 
@@ -18,16 +15,19 @@ public class Click : MonoBehaviour //, IPointerClickHandler
     public GameObject buffTakeItem;
 
     public GameObject targetClient;
+    private GameObject positionPlayer;
+    private Queue<GameObject> wayPlayer = null;
 
     void Start()
     {
+        positionPlayer = GetComponent<MovePlayer>().posStartPlayer;
+        transform.position = positionPlayer.transform.position;
         positionClick = transform.position;
     }
 
 
     void Update()
     {
-        slider.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z));
         ClickMouse();       //обработка нажатия
         Move();             //перемещение
     }
@@ -81,28 +81,58 @@ public class Click : MonoBehaviour //, IPointerClickHandler
 
     void MovePlayer()  
     {
-        if(click.GetComponent<TableControlPos>() as TableControlPos)
+        
+        if (click.GetComponent<TableControlPos>() as TableControlPos)
         {
-            positionClick = click.GetComponent<TableControlPos>().position;
-            transform.LookAt(positionClick);
+            positionClick = click.GetComponent<TableControlPos>().posGame.transform.position;
+            GameObject bufPos = click.GetComponent<TableControlPos>().posGame;
+            wayPlayer = GetComponent<MovePlayer>().GetRoute(positionPlayer, bufPos);
+            //positionClick = click.GetComponent<TableControlPos>().position;
+            //transform.LookAt(positionClick);
         } 
 
         else if(click.GetComponentInParent<TableControlPos>() as TableControlPos)
         {
-            positionClick = click.GetComponentInParent<TableControlPos>().position;
-            transform.LookAt(positionClick);
+            positionClick = click.GetComponentInParent<TableControlPos>().posGame.transform.position;
+            GameObject bufPos = click.GetComponentInParent<TableControlPos>().posGame;
+            wayPlayer = GetComponent<MovePlayer>().GetRoute(positionPlayer, bufPos);
+
+            //positionClick = click.GetComponentInParent<TableControlPos>().position;
+            //transform.LookAt(positionClick);
         }
+        
+        /*
+        if (click.GetComponent<TableControlPos>() as TableControlPos || click.GetComponentInParent<TableControlPos>() as TableControlPos)
+        {
+            positionClick = click.GetComponentInParent<TableControlPos>().posGame.transform.position;
+            GameObject bufPos = click.GetComponent<TableControlPos>().posGame;
+            wayPlayer = GetComponent<MovePlayer>().GetRoute(positionPlayer, bufPos);
+        }
+        */
     }
 
     void Move()
     {
-        if (transform.position != positionClick) //продолжаем движение
+        if (wayPlayer != null && transform.position != wayPlayer.Peek().transform.position) //продолжаем движение
         {
-            transform.position = Vector3.MoveTowards(transform.position, positionClick, Time.deltaTime * 20);
+            if(!GetComponent<Animation>().IsPlaying("RunPlayer"))
+            {
+                GetComponent<Animation>().Play("RunPlayer");
+            }
+            transform.LookAt(wayPlayer.Peek().transform.position);
+            transform.position = Vector3.MoveTowards(transform.position, wayPlayer.Peek().transform.position, Time.deltaTime * 20);
+        }
+
+        else if(transform.position != positionClick)
+        {
+            positionPlayer = wayPlayer.Dequeue();
         }
 
         else if(click != null)      //дошли до нужного места
         {
+            positionPlayer = click.GetComponent<TableControlPos>().posGame;
+            GetComponent<Animation>().Stop("RunPlayer");
+            GetComponent<Animation>().Play("StopRunPlayer");
             LastClick();
             click = null;
         }

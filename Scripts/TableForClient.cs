@@ -22,7 +22,7 @@ public class TableForClient : MonoBehaviour
                 {
                     Destroy(newItem);
                     newItem = null;
-                    transform.GetComponentInChildren<NewClient>().mood.AddMood(2);
+                    transform.GetComponentInChildren<NewClient>().mood.AddMood(10);
                 }
             }
         }

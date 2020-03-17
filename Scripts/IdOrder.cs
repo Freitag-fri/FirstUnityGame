@@ -8,7 +8,7 @@ public class IdOrder : MonoBehaviour
     int y = -25;
     void Start()
     {
-       // id = transform.GetComponent<IdTable>().id;
+        id = transform.GetComponent<IdTable>().id;
     }
 
     private void OnGUI()

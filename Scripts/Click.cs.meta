@@ -3,7 +3,13 @@ guid: 2d146f2c945f3474c9aaf58e7d916ac9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - canvas: {fileID: 1969526614215484751, guid: 43649fe461357e044b0a35558d3980ec,
+      type: 3}
+  - click: {instanceID: 0}
+  - takeItem: {instanceID: 0}
+  - buffTakeItem: {instanceID: 0}
+  - targetClient: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

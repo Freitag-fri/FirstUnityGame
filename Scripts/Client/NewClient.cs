@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewClient : MonoBehaviour
 {
@@ -13,11 +14,11 @@ public class NewClient : MonoBehaviour
     [SerializeField]
     private GameObject order;
 
-    private int zoom = 17;              //растояние от камеры до места появления клиентов
+    private int zoom = 10;              //растояние от камеры до места появления клиентов
     private int top = 6;
     private int left = 40;
     private int distancX = 35;          //между человечками <->
-    public int distancY = 60;
+    public int distancY = 90;
 
     private float time = 0f;
 
@@ -26,23 +27,35 @@ public class NewClient : MonoBehaviour
     public StatusClient status;
 
     public Mood mood;
-    public int MOODrES;
+    //public int MOODrES;
 
-    public Vector2 coordinateBox;          //координаты настроения
+    public Vector2 coordinateBoxMood;          //координаты настроения
+    [SerializeField]
+    public Canvas canvas;
+    [SerializeField]
+    private GameObject slider;
 
     void Start()
     {
         money = Resources.Load("Money") as GameObject;
         order = Resources.Load("Order") as GameObject;
+
         mood = new Mood();
-        MOODrES = mood.MoodProportion;
+        //MOODrES = mood.MoodOriginal;
         status = StatusClient.createClient;
+
+        canvas = Instantiate(canvas);
+        canvas.transform.SetParent(transform);
+        slider = canvas.transform.Find("Slider").gameObject;
+        slider.GetComponent<Slider>().maxValue = mood.maxValue;
     }
 
     void Update()
     {
+        Slider();
+
         mood.LowerMood();
-        if(mood.MoodProportion <= 0)        //настроение испортилось, удаление клиента
+        if(mood.MoodOriginal <= 0)        //настроение испортилось, удаление клиента
         {
             DeleteClient();
             return;
@@ -51,6 +64,7 @@ public class NewClient : MonoBehaviour
         if (status == StatusClient.setClient)
         {
             Money.SetClient();
+            mood.AddMood(10);
             ClientMyClass.MoveClient(placeInLine);      //вызов события на опускание очереди    
             status = StatusClient.createOrder;
             time = 0;
@@ -139,14 +153,27 @@ public class NewClient : MonoBehaviour
         Destroy(gameObject);
     }
 
+    private void Slider()
+    {
+        if (status == StatusClient.createClient)
+        {
+            coordinateBoxMood = new Vector2(left + 30, Screen.height - (top + (distancY * placeInLine) + 10));
+        }
+        slider.transform.position = new Vector2(coordinateBoxMood.x, Screen.height - coordinateBoxMood.y);
+        slider.GetComponent<Slider>().value = mood.MoodOriginal;
+        slider.GetComponentInChildren<Image>().color = mood.colorMood.ReturnColor(mood.MoodOriginal);
+    }
+
     private void OnGUI()
     {
+        /*
         if(status == StatusClient.createClient)
         {
-            coordinateBox = new Vector2(left - 15, Screen.height - (top + (distancY * placeInLine) + 10));
+            coordinateBoxMood = new Vector2(left + 30, Screen.height - (top + (distancY * placeInLine) + 10));
         }
-           
-        GUI.Box(new Rect(coordinateBox.x, coordinateBox.y, 100, 15), "");
+         
+        
+        GUI.Box(new Rect(coordinateBoxMood.x, coordinateBoxMood.y, 100, 15), "");
 
         int newMood = mood.MoodProportion;
         Texture2D texture = new Texture2D(1, 1);
@@ -157,7 +184,8 @@ public class NewClient : MonoBehaviour
 
         for(int i = 0; i < newMood; i++)
         {
-            GUI.Box(new Rect(coordinateBox.x + (i * 7 + 3 * i), coordinateBox.y, 7, 13), "", myBoxStyle2);
+            GUI.Box(new Rect(coordinateBoxMood.x + (i * 7 + 3 * i), coordinateBoxMood.y, 7, 13), "", myBoxStyle2);
         } 
+        */
     }
 }

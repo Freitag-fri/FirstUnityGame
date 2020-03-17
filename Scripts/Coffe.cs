@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Coffe : MonoBehaviour
 {
@@ -8,18 +9,31 @@ public class Coffe : MonoBehaviour
     public float time;
     public float maxTime;
     ColorMood color;
+    [SerializeField]
+    private Canvas canvas;
+    private GameObject slider;
 
     void Start()
     {
         maxTime = 6;
-        color = new ColorMood(Color.green, Color.red, maxTime);
+        color = new ColorMood(Color.green, Color.yellow, Color.red, maxTime);
+
+        canvas = Instantiate(canvas);
+        canvas.transform.SetParent(transform);
+        slider = canvas.transform.Find("Slider").gameObject;
+        slider.GetComponent<Slider>().maxValue = maxTime;
+
+        Vector2 coordinateBox;
+        GameObject pos = transform.Find("PositionProcess").gameObject;
+        coordinateBox = Camera.main.WorldToScreenPoint(new Vector3(pos.transform.position.x, pos.transform.position.y, pos.transform.position.z));
+        slider.transform.position = new Vector2(coordinateBox.x, coordinateBox.y);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if(transform.GetComponent<SavedItem>().objOnTable == null)
+        Slider();
+        if (transform.GetComponent<SavedItem>().objOnTable == null)
         {
             time += Time.deltaTime;
             if (time > maxTime)
@@ -29,6 +43,14 @@ public class Coffe : MonoBehaviour
             }
         } 
     }
+
+    private void Slider()
+    {
+        slider.GetComponent<Slider>().value = time;
+        slider.GetComponentInChildren<Image>().color = color.ReturnColor(time);
+    }
+
+    /*
 
     private void OnGUI()
     {
@@ -59,4 +81,5 @@ public class Coffe : MonoBehaviour
         }
         
     }
+    */
 }
